@@ -3,7 +3,7 @@ import Camera from "./Camera";
 import { useEffect, useState } from "react";
 import { ImagePixelated } from "react-pixelate";
 import { collection, doc, getDocs } from "firebase/firestore";
-import { db } from "../src/Firebase";
+import { db } from "./Firebase";
 import image from "./logo.jpeg";
 import ClosePng from "./close.png";
 import FooterPng from "./footer.png";
@@ -11,26 +11,43 @@ import Footer2Png from "./footer2.png";
 import CameraNew from "./CameraNew";
 import PopupCard from "./PopupCard";
 // import WebcamCapture from "./WebcamCapture";
-
+function getArea(num) {
+  let i = 0,
+    n = 0;
+  for (i = 0; i <= num + 1; i++) {
+    if (i * i === num) {
+      return i;
+    } else if (i * i < num) {
+      n = i;
+    } else {
+      return n + 1;
+    }
+  }
+}
 function App() {
   const [photos, setPhotos] = useState([]);
   const [key, setKey] = useState(Math.random());
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
+  const [total, setTotal] = useState(0);
+  const [area, setArea] = useState(0);
   useEffect(() => {
     document.querySelector(".grid-img-wrapper").style.opacity = "1";
   }, []);
 
-  function getPhotos () {
+  console.log({ total, area });
 
+  function getPhotos() {
     // axios
     //   .get("http://localhost:5001/images")
     //   .then((res) => setPhotos(res.data.data))
     //   .catch((err) => console.log(err.response));
-    
+
     getDocs(collection(db, "users")).then((querySnapshot) => {
+      console.log(querySnapshot.size);
+      setArea(getArea(querySnapshot.size));
+      setTotal(querySnapshot.size);
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -86,7 +103,7 @@ function App() {
       eltStyle.transform = "scale(0.6) translate(-50%,-50%)";
     }
   };
-  function cardLeaveHandler(e)  {
+  function cardLeaveHandler(e) {
     setKey(Math.random());
     // const allImages = document.querySelectorAll(".grid-img-wrapper > div");
     // allImages.forEach((imgDiv) => {
@@ -99,17 +116,23 @@ function App() {
     //   imgDiv.style.margin = "0px";
     //   imgDiv.style.opacity = "0.3";
     // });
-  };
-console.log(selectedCard)
+  }
+  console.log(selectedCard);
   return (
     <div className="App">
       {/* <PhotoMosaic /> */}
       {/* <Demo /> */}
       <PopupCard showCard={selectedCard} setShowCard={setSelectedCard} />
       <div style={{ margin: "auto" }}></div>
-      <div className="grid-img-wrapper" key={key} style ={{
-        opacity : !(selectedCard || showForm) ? '1' : '0'
-      }} >
+      <div
+        className="grid-img-wrapper"
+        key={key}
+        style={{
+          opacity: !(selectedCard || showForm) ? "1" : "0",
+          gridTemplateColumns: `repeat(${area < 14 ? 14 : area}, 1fr)`,
+          gridTemplateRows: `repeat(${area < 14 ? 14 : area}, 1fr)`,
+        }}
+      >
         {/* <ImagePixelated
           src={image}
           width={400}
@@ -155,22 +178,33 @@ console.log(selectedCard)
           </div>
         ))}
       </div>
-      <CameraNew getPhotos={getPhotos} setPhotos={setPhotos} showCard = {showForm} setShowCard={setShowForm} 
-      style  = {{
-        opacity : !(selectedCard || showForm) ? '1' : '0'
-
-      }}
+      <CameraNew
+        getPhotos={getPhotos}
+        setPhotos={setPhotos}
+        showCard={showForm}
+        setShowCard={setShowForm}
+        style={{
+          opacity: !(selectedCard || showForm) ? "1" : "0",
+        }}
       />
       <footer>
-        <img src={!(selectedCard || showForm) ?  FooterPng : Footer2Png} alt="" style = {!(selectedCard || showForm)  ?{
-          height : '25px',
-          width : '260px'
-        } : {
-          height : '62px',
-          width : '312px',
-          objectFit : 'contain',
-          marginBottom : '1rem'
-        }}  />
+        <img
+          src={!(selectedCard || showForm) ? FooterPng : Footer2Png}
+          alt=""
+          style={
+            !(selectedCard || showForm)
+              ? {
+                  height: "25px",
+                  width: "260px",
+                }
+              : {
+                  height: "62px",
+                  width: "312px",
+                  objectFit: "contain",
+                  marginBottom: "1rem",
+                }
+          }
+        />
         {/* <img src={Footer2Png} alt="" /> */}
       </footer>
     </div>

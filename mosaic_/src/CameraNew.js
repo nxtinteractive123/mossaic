@@ -109,7 +109,7 @@ function CameraNew({ getPhotos, setPhotos, showCard, setShowCard,style = {}}) {
   };
 
   const onSubmit = () => {
-    if (!image || !formData.message || !formData.name) return;
+    if (!image || !formData.name) return;
     else setShowCard(false);
     const file = base64ToFile(image, formData.name);
     const storageRef = ref(storage, `/image/${file.name}`);
@@ -288,7 +288,7 @@ function CameraNew({ getPhotos, setPhotos, showCard, setShowCard,style = {}}) {
             }}
           >
             <div>
-              <label htmlFor="">Name : </label>
+              <label htmlFor="">Name * </label>
               <input
                 type="text"
                 placeholder="Name"
@@ -298,7 +298,7 @@ function CameraNew({ getPhotos, setPhotos, showCard, setShowCard,style = {}}) {
               />
             </div>
             <div>
-              <label htmlFor="">Your Message : </label>
+              <label htmlFor="">Your Message </label>
               <textarea
                 placeholder="Write Your Message"
                 name="message"

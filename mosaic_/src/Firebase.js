@@ -7,9 +7,6 @@ import { getStorage } from "firebase/storage";
 
 
 
-
-
-
 const firebaseConfig = {
   apiKey: "AIzaSyAL5YpfpgBX7VGGfuVLTA9VhYNZiPuLMRE",
   authDomain: "mosaic-a3974.firebaseapp.com",
