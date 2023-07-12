@@ -57,11 +57,15 @@ function App() {
       setArea(getArea(querySnapshot.size));
       setTotal(querySnapshot.size);
       const newData = querySnapshot.docs.map((doc) => ({
+        //timestamp : new Date().getTime(),
         ...doc.data(),
         id: doc.id,
       }));
+      const dataWithTimeStamp = [...newData].filter(d => d.timestamp==undefined).sort((a, b) => a.timestamp - b.timestamp);
+      const dataWithoutTimeStamp = [...newData].filter(d => d.timestamp!=undefined).sort((a, b) => a.timestamp - b.timestamp);
       let data = newData.sort((a, b) => a.timestamp - b.timestamp);
-      updateData(data);
+      console.log({newData, data})
+      updateData([...dataWithTimeStamp,...dataWithoutTimeStamp])
       // addToData(data);
       // addToData(data);
       // if (data.length > 4 - 1) {
